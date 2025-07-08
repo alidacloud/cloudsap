@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.3.2 (2025-07-03)
+
+NEW FEATURES:
+  * add `IAM_RETRY` argument to avoid API throttling (default:3)
+
 ## 0.3.1 (2021-03-16)
 
 BUG FIXES:
