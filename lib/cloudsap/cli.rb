@@ -85,6 +85,7 @@ module Cloudsap
     --oidc-issuer   ||  URL of the EKS cluster's OIDC issuer
     --kubeconfig    ||  Path to kubeconfig file for authentication
     --debug         ||  Enable debug logging
+    --iam-retry     ||  Maximum retries for iam client (Default: 3)
     -----------------------------------------------
 
     It can be configured via commandline options above or its equivalent shell
@@ -98,6 +99,7 @@ module Cloudsap
     --oidc-issuer   ||  CLOUDSAP_OIDC_ISSUER
     --kubeconfig    ||  KUBECONFIG
     --debug         ||  CLOUDSAP_DEBUG
+    --iam-retry     ||  IAM_RETRY
     -----------------------------------------------
 
     For more information, visit the project homepage ...
@@ -110,6 +112,8 @@ module Cloudsap
     option :oidc_issuer,  type: :string,  default: ENV['CLOUDSAP_OIDC_ISSUER'], required: false
     option :kubeconfig,   type: :string,  default: ENV['KUBECONFIG'], required: false
     option :debug,        type: :boolean, default: (ENV['CLOUDSAP_DEBUG'] || false)
+    option :iam_retry,    type: :string, default: (ENV['IAM_RETRY'] || '3')
+
     def controller
       $stdout.sync = true
 
@@ -155,6 +159,7 @@ module Cloudsap
     --cluster-name  ||  Name designated for the EKS cluster (required)
     --namespace     ||  Namespace in which to deploy operator (required)
     --kubeconfig    ||  Path to kubeconfig file for authentication
+    --iam-retry     ||  Maximum retries for iam client (Default: 3)
     -----------------------------------------------
 
     It can be configured via commandline options above or its equivalent shell
@@ -167,6 +172,7 @@ module Cloudsap
     --cluster-name  ||  CLOUDSAP_CLUSTER_NAME
     --namespace     ||  CLOUDSAP_NAMESPACE
     --kubeconfig    ||  KUBECONFIG
+    --iam-retry     ||  IAM_RETRY
     -----------------------------------------------
 
     For more information, visit the project homepage ...
@@ -178,6 +184,7 @@ module Cloudsap
     option :cluster_name, type: :string, default: ENV['CLOUDSAP_CLUSTER_NAME'], required: true
     option :namespace,    type: :string, default: ENV['CLOUDSAP_NAMESPACE'], required: true
     option :kubeconfig,   type: :string, default: ENV['KUBECONFIG'], required: false
+    option :iam_retry,    type: :string, default: (ENV['IAM_RETRY'] || '3')
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def install(component)

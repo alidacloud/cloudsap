@@ -56,6 +56,10 @@ module Cloudsap
         options.kubeconfig
       end
 
+      def iam_retry
+        options.iam_retry
+      end
+
       def assets
         "#{File.expand_path(__dir__)}/assets"
       end
@@ -113,8 +117,11 @@ module Cloudsap
       end
 
       def init_aws_iam_client
-        client = ::Aws::IAM::Client.new(region: options.aws_region)
-        resp   = client.list_roles(path_prefix: '/', max_items: 1)
+        client = ::Aws::IAM::Client.new(
+          region: options.aws_region,
+          retry_limit: iam_retry.to_i
+        )
+        resp = client.list_roles(path_prefix: '/', max_items: 1)
         if resp.successful?
           logger.debug '::Aws::IAM::Client initialized'
           return client
