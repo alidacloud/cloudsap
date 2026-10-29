@@ -1,5 +1,13 @@
 FROM ruby:2.7 as build
 
+# Bundler settings live in the environment (not /root/.bundle/config) so the
+# non-root runtime user can read them
+ENV BUNDLE_DEPLOYMENT=true \
+    BUNDLE_PATH=vendor \
+    BUNDLE_WITHOUT="development:test" \
+    BUNDLE_NO_CACHE=true \
+    BUNDLE_JOBS=5
+
 RUN mkdir /app
 
 WORKDIR /app
@@ -10,11 +18,6 @@ COPY exe/ ./exe
 COPY *.md *.rdoc *.gemspec Gemfile* LICENSE.txt ./
 
 RUN echo 'gem: --no-document' > /etc/gemrc \
-  && bundle config jobs 5 \
-  && bundle config set no-cache 'true' \
-  && bundle config set deployment 'true' \
-  && bundle config set without 'development test' \
-  && bundle config set path 'vendor' \
   && bundle install -j4 --retry 3 \
   && gem source --clear-all
 
@@ -23,11 +26,26 @@ RUN echo 'gem: --no-document' > /etc/gemrc \
 #####################################################################
 
 FROM ruby:2.7-slim
-MAINTAINER Brian Warsing <dayglojesus@gmail.com>
+LABEL maintainer="Brian Warsing <dayglojesus@gmail.com>"
 
+ARG APP_UID=10001
+ARG APP_GID=10001
+
+ENV BUNDLE_DEPLOYMENT=true \
+    BUNDLE_PATH=vendor \
+    BUNDLE_WITHOUT="development:test" \
+    HOME=/home/cloudsap
+
+RUN groupadd --gid ${APP_GID} cloudsap \
+  && useradd --uid ${APP_UID} --gid ${APP_GID} --home-dir /home/cloudsap \
+     --create-home --shell /usr/sbin/nologin cloudsap
+
+# App files are owned by root and read-only to the runtime user
 COPY --from=build /app /app
-COPY --from=build /root/.bundle/config /root/.bundle/config
 
 WORKDIR /app
+
+# Numeric UID so Kubernetes can verify runAsNonRoot
+USER ${APP_UID}:${APP_GID}
 
 ENTRYPOINT ["bundle", "exec", "cloudsap"]

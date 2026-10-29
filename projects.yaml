@@ -1,0 +1,11 @@
+---
+projects:
+  alida/cloudsap:
+    type: image
+    dockerfile: Dockerfile
+    version: &semver 0.3.3
+    description: Kubernetes CRD + Controller for creating and managing AWS IAM Roles for Service Accounts in EKS
+    registry: 136622757876.dkr.ecr.us-west-2.amazonaws.com
+    tags:
+      - *semver
+      - latest
