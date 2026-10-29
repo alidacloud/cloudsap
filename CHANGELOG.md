@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.3 (2026-10-27)
+* [Matt Haynes] - S3-57087 run the container as non-root user `cloudsap` (UID/GID `10001`)
+  * add `projects.yaml` and update `Rakefile` for gocd image build/deployment & rm GHA
+
 ## 0.3.2 (2025-07-03)
 
 NEW FEATURES:
